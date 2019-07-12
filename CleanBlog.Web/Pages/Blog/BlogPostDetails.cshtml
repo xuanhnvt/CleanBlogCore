@@ -1,0 +1,11 @@
+﻿@page "{GenericSlug}"
+@model CleanBlog.Web.Pages.Blog.BlogPostDetailsModel
+@using Microsoft.AspNetCore.Routing;
+@{
+    ViewData["Title"] = "Blog Details";
+}
+
+<h1>Details</h1>
+<h2>@Model.RouteDataString</h2>
+<a href="@Model._linkGenerator.GetPathByName("GenericEndpoint", new { GenericSlug = "test-test" })">Seo link</a>
+

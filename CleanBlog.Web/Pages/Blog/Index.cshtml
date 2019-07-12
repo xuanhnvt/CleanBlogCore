@@ -1,0 +1,77 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "My Blog";
+    ViewData["SubTitle"] = "A Blog Theme by Start Bootstrap";
+    ViewData["BackgroundImageUrl"] = Url.Content("~/") + "img/home-bg.jpg";;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <div id="post-list">
+                <partial name="_PostListPartial" model="Model.PreviewPostList" />
+            </div>
+
+            <div id="loadingdiv" style="text-align:center;display:none;margin-bottom:20px;">
+                <img src="~/img/ajax-loader.gif" width="40" height="40" />
+            </div>
+
+            <!-- Pager -->
+            @*@if(Model.PagingFilteringViewModel.HasNextPage)
+                {
+                    <div class="clearfix">
+                        <a class="btn btn-primary float-right" id="older-posts">Older Posts &rarr;</a>
+                    </div>
+                }*@
+        </div>
+    </div>
+
+    <script>
+        var currentPageNumber;
+        var noMoredata = false;
+        var inProgress = false;
+
+        $(document).ready(function () {
+            currentPageNumber = @Model.PagingFilteringViewModel.PageNumber;
+            function loadMore() {
+                var requestPageNumber = currentPageNumber + 1;
+                inProgress = true;
+                $("#loadingdiv").show();
+                $.ajax({
+                    type: 'GET',
+                    url: "@Url.PageLink(pageHandler: "LoadMore")",
+                    data: {
+                        pageNumber: requestPageNumber
+                    },
+                    success: function (data, statuText, response) {
+                        currentPageNumber++;
+                        noMoredata = data.noMoredata;
+                        $('#post-list').append(data.htmlString);
+                        $("#loadingdiv").hide();
+                        inProgress = false;
+                    },
+                    error: function (error) {
+                        $("#loadingdiv").hide();
+                        inProgress = false;
+                    }
+                });
+            }
+
+           $(window).scroll(function () {
+                if (($(window).scrollTop() > Number($('#post-list').height()) * 0.75) && !noMoredata && !inProgress) {
+                    loadMore();
+                }
+            });
+
+            /*$('#older-posts').click(function () {
+                if (!noMoredata && !inProgress) {
+                    loadMore();
+                    if (noMoredata) {
+                        $('#older-posts').hide();
+                    }
+                }
+            });*/
+        });
+    </script>
+</div>

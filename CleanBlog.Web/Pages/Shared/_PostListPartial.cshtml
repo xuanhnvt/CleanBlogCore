@@ -1,0 +1,29 @@
+﻿@model List<BlogPostListRowViewModel>
+@inject LinkGenerator _linkGenerator
+@{
+    ViewData["Title"] = "About me";
+}
+
+@foreach (var item in Model)
+{
+    <div class="post-preview">
+
+        <a href="@_linkGenerator.GetPathByName("GenericEndpoint", new { GenericSlug = item.Slug })">
+            <h2 class="post-title">
+                @item.Title
+            </h2>
+            @foreach (var tag in item.Tags)
+            {
+                <a href="@_linkGenerator.GetPathByName("GenericEndpoint", new { GenericSlug = tag.Slug })" class="badge badge-primary">@tag.Name</a>
+            }
+            <h3 class="post-subtitle">
+                @item.BodyOverview
+            </h3>
+        </a>
+        <p class="post-meta">
+            Posted by
+            <a href="#">@item.AuthorName</a>
+            on <span>@item.CreatedOnUtc</span>
+        </p>
+    </div>
+}
